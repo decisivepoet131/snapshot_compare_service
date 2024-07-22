@@ -22,4 +22,4 @@ EXPOSE ${PORT}
 ENV FLASK_APP=app.py
 
 # Run the application
-CMD ["flask", "run", "--host=0.0.0.0", "--port=${PORT}"]
+CMD ["sh", "-c", "flask run --host=0.0.0.0 --port=${PORT}"]
