@@ -4,6 +4,7 @@ import time
 import gzip
 import shutil
 from werkzeug.utils import secure_filename
+from services.snapshot_compare_items import items_compare
 from services.snapshot_compare_item_attributes import item_attributes_compare
 from services.snapshot_compare_item_prices import item_price_compare
 from services.snapshot_compare_link_groups import link_groups_compare
@@ -18,6 +19,7 @@ def decompress_gz(file_path, output_path):
         with open(output_path, 'wb') as f_out:
             shutil.copyfileobj(f_in, f_out)
 
+@snapshot_compare_bp.route('/api/snapshot-compare/items', methods=['POST'])
 @snapshot_compare_bp.route('/api/snapshot-compare/item-attributes', methods=['POST'])
 @snapshot_compare_bp.route('/api/snapshot-compare/item-prices', methods=['POST'])
 @snapshot_compare_bp.route('/api/snapshot-compare/link-groups', methods=['POST'])
@@ -73,6 +75,8 @@ def snapshot_compare():
             result= groups_compare(decompressed_file1_path, decompressed_file2_path, ignored_attributes)
         elif request.path.endswith('categories'):
             result= categories_compare(decompressed_file1_path, decompressed_file2_path, ignored_attributes)
+        elif request.path.endswith('items'):
+            result= items_compare(decompressed_file1_path, decompressed_file2_path, ignored_attributes)
         else:
             logger.error("Invalid endpoint")
             return log_response(jsonify({"error": "Invalid endpoint"}), 400)
