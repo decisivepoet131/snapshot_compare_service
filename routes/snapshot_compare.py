@@ -4,10 +4,11 @@ import time
 import gzip
 import shutil
 from werkzeug.utils import secure_filename
-from services.item_attributes_snapshot_compare import item_attributes_compare
-from services.item_prices_snapshot_compare import item_price_compare
-from services.link_groups_snapshot_compare import link_groups_compare
-from services.groups_snapshot_compare import groups_compare
+from services.snapshot_compare_item_attributes import item_attributes_compare
+from services.snapshot_compare_item_prices import item_price_compare
+from services.snapshot_compare_link_groups import link_groups_compare
+from services.snapshot_compare_groups import groups_compare
+from services.snapshot_compare_categories import categories_compare
 from utils.logger import log_entry_exit, log_response, logger, save_result_and_log
 
 snapshot_compare_bp = Blueprint('snapshot_compare', __name__)
@@ -21,6 +22,7 @@ def decompress_gz(file_path, output_path):
 @snapshot_compare_bp.route('/api/snapshot-compare/item-prices', methods=['POST'])
 @snapshot_compare_bp.route('/api/snapshot-compare/link-groups', methods=['POST'])
 @snapshot_compare_bp.route('/api/snapshot-compare/groups', methods=['POST'])
+@snapshot_compare_bp.route('/api/snapshot-compare/categories', methods=['POST'])
 @log_entry_exit
 def snapshot_compare():
     try:
@@ -69,6 +71,8 @@ def snapshot_compare():
             result= link_groups_compare(decompressed_file1_path, decompressed_file2_path, ignored_attributes)
         elif request.path.endswith('groups'):
             result= groups_compare(decompressed_file1_path, decompressed_file2_path, ignored_attributes)
+        elif request.path.endswith('categories'):
+            result= categories_compare(decompressed_file1_path, decompressed_file2_path, ignored_attributes)
         else:
             logger.error("Invalid endpoint")
             return log_response(jsonify({"error": "Invalid endpoint"}), 400)
