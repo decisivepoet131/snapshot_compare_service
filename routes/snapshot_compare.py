@@ -58,7 +58,7 @@ def snapshot_compare():
 
         logger.info(f"Received files: {filename1}, {filename2}")
 
-        # Decompress the files
+        # Decompress the files or others
         decompressed_file1_path = os.path.join(temp_dir, f"decompressed_{filename1}")
         decompressed_file2_path = os.path.join(temp_dir, f"decompressed_{filename2}")
         decompress_gz(file1_path, decompressed_file1_path)
